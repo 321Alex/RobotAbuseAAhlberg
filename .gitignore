@@ -1,0 +1,30 @@
+# Visual Studio files
+.vs/
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Unreal Engine files
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+*.VC.db
+*.opensdf
+*.opendb
+*.sdf
+*.xcodeproj
+*.xcworkspace
+
+# Don't ignore .uproject file
+!*.uproject
+
+# Rider files
+.idea/
+
+# Cache files
+*.tmp
+*.log
