@@ -196,7 +196,7 @@ void ARobotSpectatorPawn::UpdateDraggedActor()
     // Use the initial distance we stored
     FVector NewLocation = CameraLocation + (WorldDirection * InitialDragDistance);
     
-    //TODO Make a drag componen
+    //TODO Make a drag component and add a interface
     if (DraggedPart)
     {
         DraggedPart->UpdateHeldPosition(NewLocation);

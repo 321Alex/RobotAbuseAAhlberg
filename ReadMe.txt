@@ -36,8 +36,7 @@
 
 ### Unit Testing
 Automated unit tests were implemented to validate the attachment system's type compatibility and state transitions. 
-The tests are included in `Source/RobotTraining/Tests/AttachmentSystemTests.cpp` but are currently commented out due to an Unreal Engine build tool dependency conflict (NuGet package vulnerability NU1902 in AutomationUtils).
-Added lots of logs for debugging and would look for the best work around if continued work on this project.
+Type "Automation RunTests RobotAbuse" into the console in Unreal to test.
 
 The tests validate:
 - Left/right arm type validation (left arms only fit left sockets)

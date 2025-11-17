@@ -1,16 +1,22 @@
-﻿/*
-#include "Misc/AutomationTest.h"
+﻿#include "Misc/AutomationTest.h"
 #include "AttachablePart.h"
 #include "AttachmentPoint.h"
 
+static struct FTestFileVerification
+{
+	FTestFileVerification()
+	{
+		UE_LOG(LogTemp, Error, TEXT("!!! ATTACHMENT TESTS FILE IS COMPILED !!!"));
+	}
+} GTestVerifier;
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
-    FAttachmentCompatibilityTest_V2,
+    FAttachmentCompatibilityTest_Final,
     "RobotAbuse.AttachmentSystem.CompatibilityCheck",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter
 )
 
-bool FAttachmentCompatibilityTest_V2::RunTest(const FString& Parameters)
+bool FAttachmentCompatibilityTest_Final::RunTest(const FString& Parameters)
 { 
     UAttachmentPoint* LeftSocket = NewObject<UAttachmentPoint>();
     LeftSocket->AcceptedArmType = EArmType::Left;
@@ -34,12 +40,12 @@ bool FAttachmentCompatibilityTest_V2::RunTest(const FString& Parameters)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
-    FPartStateTransitionTest_V2,
+    FPartStateTransitionTest_Final,
     "RobotAbuse.AttachablePart.StateTransitions",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter
 )
 
-bool FPartStateTransitionTest_V2::RunTest(const FString& Parameters)
+bool FPartStateTransitionTest_Final::RunTest(const FString& Parameters)
 {
     AAttachablePart* Part = NewObject<AAttachablePart>();
     
@@ -59,4 +65,3 @@ bool FPartStateTransitionTest_V2::RunTest(const FString& Parameters)
     
     return true;
 }
-*/

@@ -26,7 +26,7 @@ void AAttachablePart::BeginPlay()
     SetEmissive(NormalEmissive);
 }
 
-//TODO Would like to add a seperate component to handle highlight and make it more flexible
+//TODO Would like to add a separate component to handle highlight and make it more flexible
 void AAttachablePart::SetupMaterials()
 {
     DynamicMaterials.Empty();
