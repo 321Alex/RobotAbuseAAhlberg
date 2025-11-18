@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "CoreMinimal.h"
 #include "GameFramework/SpectatorPawn.h"
 #include "RobotSpectatorPawn.generated.h"
 

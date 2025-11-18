@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interactable.h"
 #include "AttachablePart.generated.h"
@@ -20,7 +19,7 @@ enum class EArmType : uint8
 {
     Left,
     Right,
-    Universal  // Optional - for parts that fit anywhere
+    Universal
 };
 
 UCLASS()

@@ -2,14 +2,6 @@
 #include "AttachablePart.h"
 #include "AttachmentPoint.h"
 
-static struct FTestFileVerification
-{
-	FTestFileVerification()
-	{
-		UE_LOG(LogTemp, Error, TEXT("!!! ATTACHMENT TESTS FILE IS COMPILED !!!"));
-	}
-} GTestVerifier;
-
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FAttachmentCompatibilityTest_Final,
     "RobotAbuse.AttachmentSystem.CompatibilityCheck",

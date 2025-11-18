@@ -23,7 +23,7 @@ void ARobotTorso::SetupMaterials()
 {
 	DynamicMaterials.Empty();
     
-	// Get ALL mesh components (torso has multiple meshes)
+	// Get all mesh components
 	TArray<UStaticMeshComponent*> MeshComponents;
 	GetComponents<UStaticMeshComponent>(MeshComponents);
     

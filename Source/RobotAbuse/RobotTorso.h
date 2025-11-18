@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interactable.h"
 #include "RobotTorso.generated.h"

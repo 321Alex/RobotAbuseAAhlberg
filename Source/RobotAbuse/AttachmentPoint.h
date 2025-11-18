@@ -1,15 +1,9 @@
 #pragma once
 
-#include "CoreMinimal.h"
 #include "AttachablePart.h"
 #include "Components/SceneComponent.h"
 #include "Interactable.h"
 #include "AttachmentPoint.generated.h"
-
-class UStaticMeshComponent;
-class UMaterialInstanceDynamic;
-class AAttachablePart;
-class UChildActorComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ROBOTABUSE_API UAttachmentPoint : public USceneComponent, public IInteractable
