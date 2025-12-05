@@ -1,7 +1,6 @@
 ﻿#include "RobotSpectatorPawn.h"
 #include "AttachablePart.h"
 #include "AttachmentPoint.h"
-#include "Interactable.h"
 #include "Blueprint/UserWidget.h"
 
 void ARobotSpectatorPawn::BeginPlay()
@@ -52,10 +51,6 @@ void ARobotSpectatorPawn::OnMouseClick()
     // TODO: Extract helper functions to improve readability (e.g., TryAttachPart, HandlePartDrop)
     
     APlayerController* PC = Cast<APlayerController>(GetController());
-    // Verify this function is called by a player-controlled pawn
-    check (PC);
-    
-    PC->bShowMouseCursor = true;
     
     // Raycast to determine what the mouse is clicking
     FHitResult Hit;
@@ -114,9 +109,9 @@ void ARobotSpectatorPawn::OnMouseClick()
     else
     {
         //Begin dragging new actor
-        if (Hit.GetActor() && Hit.GetActor()->Implements<UInteractable>())
+        if (Hit.GetActor() && Hit.GetActor()->Implements<UClickable>())
         {
-            IInteractable::Execute_OnClicked(Hit.GetActor());
+            IClickable::Execute_OnClicked(Hit.GetActor());
             StartDragging(Hit.GetActor());
         }
     }
@@ -209,31 +204,40 @@ void ARobotSpectatorPawn::UpdateDraggedActor()
 
 void ARobotSpectatorPawn::UpdateHighlights()
 {
+    //TODO this should be a saved reference
     APlayerController* PC = Cast<APlayerController>(GetController());
-    if (!PC) return;
-    
+
     FHitResult Hit;
     PC->GetHitResultUnderCursor(ECC_Visibility, false, Hit);
     
-    UObject* NewHoveredTarget = nullptr;
+    AActor* NewTarget = nullptr;
     
-    // Only update hover when not dragging
     if (!DraggedActor)
     {
-        if (Hit.GetActor() && Hit.GetActor()->Implements<UInteractable>())
+        if (Hit.GetActor() && Hit.GetActor()->Implements<UClickable>())
         {
-            NewHoveredTarget = Hit.GetActor();
+            NewTarget = Hit.GetActor();
         }
     }
     
     // Update highlight if changed
-    if (NewHoveredTarget != HoveredTarget)
+    if (NewTarget != HoveredTarget)
     {
-        SetHighlight(HoveredTarget, false);
-        SetHighlight(NewHoveredTarget, true);
-        HoveredTarget = NewHoveredTarget;
+        // End hover on old target
+        if (HoveredTarget && HoveredTarget->Implements<UHoverable>())
+        {
+            IHoverable::Execute_OnHoverEnd(HoveredTarget);
+        }
         
-        if (AAttachablePart* Part = Cast<AAttachablePart>(NewHoveredTarget))
+        // Begin hover on new target
+        if (NewTarget && NewTarget->Implements<UHoverable>())
+        {
+            IHoverable::Execute_OnHoverBegin(NewTarget);
+        }
+        
+        HoveredTarget = NewTarget;
+        
+        if (AAttachablePart* Part = Cast<AAttachablePart>(NewTarget))
         {
             OnPartStateChanged.Broadcast(Part);
         }

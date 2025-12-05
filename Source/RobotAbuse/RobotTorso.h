@@ -1,11 +1,12 @@
 ﻿#pragma once
 
+#include "IClickable.h"
+#include "IHoverable.h"
 #include "GameFramework/Actor.h"
-#include "Interactable.h"
 #include "RobotTorso.generated.h"
 
 UCLASS()
-class ROBOTABUSE_API ARobotTorso : public AActor, public IInteractable
+class ROBOTABUSE_API ARobotTorso : public AActor, public IClickable, public IHoverable
 {
 	GENERATED_BODY()
     
@@ -13,8 +14,7 @@ public:
 	ARobotTorso();
 
 	virtual void BeginPlay() override;
-
-	// IInteractable
+	
 	virtual void OnHoverBegin_Implementation() override;
 	virtual void OnHoverEnd_Implementation() override;
 	virtual void OnClicked_Implementation() override;

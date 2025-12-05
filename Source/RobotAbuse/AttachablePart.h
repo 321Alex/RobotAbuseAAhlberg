@@ -1,7 +1,8 @@
 ﻿#pragma once
 
+#include "IClickable.h"
+#include "IHoverable.h"
 #include "GameFramework/Actor.h"
-#include "Interactable.h"
 #include "AttachablePart.generated.h"
 
 class UAttachmentPoint;
@@ -23,7 +24,7 @@ enum class EArmType : uint8
 };
 
 UCLASS()
-class ROBOTABUSE_API AAttachablePart : public AActor, public IInteractable
+class ROBOTABUSE_API AAttachablePart : public AActor, public IClickable, public IHoverable
 {
     GENERATED_BODY()
     
