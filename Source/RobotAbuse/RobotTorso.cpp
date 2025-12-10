@@ -16,7 +16,7 @@ void ARobotTorso::BeginPlay()
 {
 	Super::BeginPlay();
 	SetupMaterials();
-	SetEmissive(NormalEmissive);
+	SetEmissiveIncludingAttachedParts(NormalEmissive);
 }
 
 void ARobotTorso::SetupMaterials()
@@ -95,12 +95,12 @@ void ARobotTorso::OnHoverEnd_Implementation()
 
 void ARobotTorso::OnClicked_Implementation()
 {
-
+	SetEmissiveIncludingAttachedParts(HighlightEmissive);
 }
 
 void ARobotTorso::OnDropped_Implementation()
 {
-
+	SetEmissiveIncludingAttachedParts(NormalEmissive);
 }
 
 void ARobotTorso::UpdateDragPosition_Implementation(const FVector& WorldPosition)

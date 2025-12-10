@@ -36,11 +36,16 @@ protected:
     
 	void UpdateDraggedActor();
 	void UpdateHighlights();
+	
+	void StartHighlightTimer();
+	void StopHighlightTimer();
 
 private:
 	
 	float InitialDragDistance;
-	// ===== State =====
+	
+	// Timer for hover detection
+	FTimerHandle HighlightTimerHandle;
 	
 	UPROPERTY()
 	APlayerController* CachedPC;

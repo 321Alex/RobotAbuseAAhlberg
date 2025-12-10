@@ -13,22 +13,21 @@ void ARobotSpectatorPawn::BeginPlay()
 
 	CachedPC = Cast<APlayerController>(GetController());
 	check(CachedPC);
+	
+	CachedPC->bShowMouseCursor = true;
+	CachedPC->bEnableClickEvents = true;
+	CachedPC->bEnableMouseOverEvents = true;
 
-	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	if (UClass* WidgetClass = LoadClass<UUserWidget>(nullptr, TEXT("/Game/Widgets/WBP_ArmStatus.WBP_ArmStatus_C")))
 	{
-		if (UClass* WidgetClass = LoadClass<UUserWidget>(nullptr, TEXT("/Game/Widgets/WBP_ArmStatus.WBP_ArmStatus_C")))
+		UUserWidget* Widget = CreateWidget<UUserWidget>(CachedPC, WidgetClass);
+		if (Widget)
 		{
-			UUserWidget* Widget = CreateWidget<UUserWidget>(PC, WidgetClass);
-			if (Widget)
-			{
-				Widget->AddToViewport();
-			}
+			Widget->AddToViewport();
 		}
-
-		PC->bShowMouseCursor = true;
-		PC->bEnableClickEvents = true;
-		PC->bEnableMouseOverEvents = true;
 	}
+	
+	StartHighlightTimer();
 }
 
 void ARobotSpectatorPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -48,8 +47,6 @@ void ARobotSpectatorPawn::Tick(float DeltaTime)
 	{
 		UpdateDraggedActor();
 	}
-
-	UpdateHighlights();
 }
 
 void ARobotSpectatorPawn::OnMouseClick()
@@ -87,10 +84,11 @@ void ARobotSpectatorPawn::OnMouseClick()
 
 					DraggedActor = nullptr;
 					InitialDragDistance = 0.0f;
+					StartHighlightTimer();
 				}
 				// If failed, keep dragging (wrong socket type)
 			}
-		} 
+		}
 		else
 		{
 			// Clicked empty space - drop
@@ -108,6 +106,7 @@ void ARobotSpectatorPawn::OnMouseClick()
 
 			DraggedActor = nullptr;
 			InitialDragDistance = 0.0f;
+			StartHighlightTimer();
 		}
 	}
 	// Not dragging, try to pick up
@@ -123,6 +122,7 @@ void ARobotSpectatorPawn::HandleNewClick(AActor* Actor)
 {
 	if (Actor->Implements<UClickable>())
 	{
+		StopHighlightTimer();
 		// Call click interface - part handles pickup itself via OnClicked
 		IClickable::Execute_OnClicked(Actor);
 
@@ -183,6 +183,41 @@ void ARobotSpectatorPawn::UpdateDraggedActor()
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("DraggedActor does not implement IDraggable!"));
+	}
+}
+
+void ARobotSpectatorPawn::StartHighlightTimer()
+{
+	if (!GetWorldTimerManager().IsTimerActive(HighlightTimerHandle))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Starting highlight timer"));
+        
+		// Run UpdateHighlights every 0.1 seconds (10 times per second)
+		GetWorldTimerManager().SetTimer(
+			HighlightTimerHandle,                          
+			this,                                         
+			&ARobotSpectatorPawn::UpdateHighlights,       
+			0.1f,                                       
+			true                                   
+		);
+	}
+}
+
+void ARobotSpectatorPawn::StopHighlightTimer()
+{
+	if (GetWorldTimerManager().IsTimerActive(HighlightTimerHandle))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Stopping highlight timer"));
+        
+		GetWorldTimerManager().ClearTimer(HighlightTimerHandle);
+        
+		// Clear any current highlight when stopping
+		if (HoveredTarget && HoveredTarget->Implements<UHoverable>())
+		{
+			IHoverable::Execute_OnHoverEnd(HoveredTarget);
+		}
+        
+		HoveredTarget = nullptr;
 	}
 }
 
