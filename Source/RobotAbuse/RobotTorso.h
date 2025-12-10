@@ -1,12 +1,13 @@
-﻿#pragma once
+﻿ #pragma once
 
 #include "IClickable.h"
+#include "IDraggable.h"
 #include "IHoverable.h"
 #include "GameFramework/Actor.h"
 #include "RobotTorso.generated.h"
 
 UCLASS()
-class ROBOTABUSE_API ARobotTorso : public AActor, public IClickable, public IHoverable
+class ROBOTABUSE_API ARobotTorso : public AActor, public IClickable, public IHoverable, public IDraggable
 {
 	GENERATED_BODY()
     
@@ -18,6 +19,9 @@ public:
 	virtual void OnHoverBegin_Implementation() override;
 	virtual void OnHoverEnd_Implementation() override;
 	virtual void OnClicked_Implementation() override;
+	
+	virtual void UpdateDragPosition_Implementation(const FVector& WorldPosition) override;
+	virtual void OnDropped_Implementation() override;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

@@ -29,32 +29,25 @@ protected:
 
 	// ===== Interaction Functions =====
     
-	void StartDragging(AActor* Actor);
+	void HandleNewClick(AActor* Actor);
 	void StopDragging();
 
 	// ===== Update Functions =====
     
 	void UpdateDraggedActor();
 	void UpdateHighlights();
-    
-	// ===== Highlight Helpers =====
-    
-	void SetHighlight(UObject* Target, bool bHighlight);
 
 private:
 	
 	float InitialDragDistance;
 	// ===== State =====
+	
+	UPROPERTY()
+	APlayerController* CachedPC;
     
 	UPROPERTY()
 	AActor* DraggedActor;
 
 	UPROPERTY()
-	AAttachablePart* DraggedPart;
-
-	UPROPERTY()
 	UObject* HoveredTarget;
-    
-	UPROPERTY()
-	UObject* DraggedTarget;
 };

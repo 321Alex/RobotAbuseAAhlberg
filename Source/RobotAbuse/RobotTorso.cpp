@@ -45,8 +45,6 @@ void ARobotTorso::SetupMaterials()
 	}
 }
 
-
-
 void ARobotTorso::SetEmissive(float Value)
 {
 	for (UMaterialInstanceDynamic* Mat : DynamicMaterials)
@@ -90,7 +88,7 @@ void ARobotTorso::OnHoverBegin_Implementation()
 	SetEmissiveIncludingAttachedParts(HighlightEmissive);
 }
 
-void ARobotTorso::OnHoverEnd_Implementation()
+void ARobotTorso::OnHoverEnd_Implementation()  
 {
 	SetEmissiveIncludingAttachedParts(NormalEmissive);
 }
@@ -98,5 +96,15 @@ void ARobotTorso::OnHoverEnd_Implementation()
 void ARobotTorso::OnClicked_Implementation()
 {
 
+}
+
+void ARobotTorso::OnDropped_Implementation()
+{
+
+}
+
+void ARobotTorso::UpdateDragPosition_Implementation(const FVector& WorldPosition)
+{
+	SetActorLocation(WorldPosition);
 }
 

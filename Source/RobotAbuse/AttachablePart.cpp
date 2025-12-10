@@ -73,21 +73,61 @@ void AAttachablePart::OnHoverEnd_Implementation()
 
 void AAttachablePart::OnClicked_Implementation()
 {
-    PickUp();
+    // When clicked, pick ourselves up
+    if (CurrentState == EPartState::DETACHED)
+    {
+        PickUp();
+    }
+    else if (CurrentState == EPartState::ATTACHED)
+    {
+        DetachFromPoint();
+        PickUp();
+    }
+}
+
+void AAttachablePart::OnDropped_Implementation()
+{
+    Drop();
+}
+
+bool AAttachablePart::TryAttachTo_Implementation(UAttachmentPoint* Point)
+{
+    // Validate inputs
+    if (!Point)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TryAttachTo called with null point"));
+        return false;
+    }
+    
+    // Check if this part can attach to this point (type compatibility)
+    if (!Point->CanAcceptPart(this))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("%s cannot attach to %s - wrong type"), 
+               *GetName(), *Point->GetName());
+        return false;
+    }
+    
+    // Detach from current point if attached elsewhere
+    if (CurrentAttachmentPoint)
+    {
+        DetachFromPoint();
+    }
+    
+    // Perform attachment
+    Point->AttachPart(this);      // Tell point it has a part
+    AttachToPoint(Point);          // Attach ourselves to the point
+    
+    UE_LOG(LogTemp, Log, TEXT("Successfully attached %s to %s"), 
+           *GetName(), *Point->GetName());
+    
+    return true;
 }
 
 void AAttachablePart::PickUp()
 {
-    //When this object is picked up it checks if needs to be detached from point
-    DetachFromCurrentPoint();
-    DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-    
     CurrentState = EPartState::HELD;
     SetEmissive(HighlightEmissive);
-    
-    UE_LOG(LogTemp, Log, TEXT("Picked up part: %s"), *GetName());
 }
-
 
 void AAttachablePart::Drop()
 {
@@ -97,37 +137,37 @@ void AAttachablePart::Drop()
 
 void AAttachablePart::AttachToPoint(UAttachmentPoint* Point)
 {
-    if (!Point) return;
-    
-    DetachFromCurrentPoint();
     CurrentAttachmentPoint = Point;
-    
-    AttachToComponent(Point, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-    
     CurrentState = EPartState::ATTACHED;
-    SetEmissive(NormalEmissive);
     
-    UE_LOG(LogTemp, Log, TEXT("Part %s attached to point %s"), *GetName(), *Point->GetName());
+    // Snap to attachment point location
+    AttachToComponent(Point, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+    SetActorLocation(Point->GetComponentLocation());
+    
+    // Turn off highlight
+    SetEmissive(NormalEmissive);
+}
+
+void AAttachablePart::DetachFromPoint()
+{
+    DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+    
+    if (CurrentAttachmentPoint)
+    {
+        CurrentAttachmentPoint->DetachPart();
+        CurrentAttachmentPoint = nullptr;
+    }
+    
+    CurrentState = EPartState::DETACHED;
 }
 
 
-
-void AAttachablePart::UpdateHeldPosition(FVector WorldPosition)
+void AAttachablePart::UpdateDragPosition_Implementation(const FVector& WorldPosition)
 {
     //Added offset to handle offset on mesh but did not get a chance to configure well
     if (CurrentState == EPartState::HELD)
     {
         SetActorLocation(WorldPosition + HeldOffset);
-    }
-}
-
-void AAttachablePart::DetachFromCurrentPoint()
-{
-    if (CurrentAttachmentPoint)
-    {
-        // Tell the attachment point we're detaching
-        CurrentAttachmentPoint->DetachPart();
-        CurrentAttachmentPoint = nullptr;
     }
 }
 

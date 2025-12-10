@@ -1,6 +1,8 @@
 ﻿#pragma once
 
+#include "IAttachable.h"
 #include "IClickable.h"
+#include "IDraggable.h"
 #include "IHoverable.h"
 #include "GameFramework/Actor.h"
 #include "AttachablePart.generated.h"
@@ -24,7 +26,7 @@ enum class EArmType : uint8
 };
 
 UCLASS()
-class ROBOTABUSE_API AAttachablePart : public AActor, public IClickable, public IHoverable
+class ROBOTABUSE_API AAttachablePart : public AActor, public IClickable, public IHoverable, public IDraggable, public IAttachable
 {
     GENERATED_BODY()
     
@@ -37,6 +39,13 @@ public:
     virtual void OnHoverBegin_Implementation() override;
     virtual void OnHoverEnd_Implementation() override;
     virtual void OnClicked_Implementation() override;
+    
+    // IDraggable
+    virtual void UpdateDragPosition_Implementation(const FVector& WorldPosition) override;
+    virtual void OnDropped_Implementation() override;
+    
+    // IAttachable
+    virtual bool TryAttachTo_Implementation(UAttachmentPoint* Point) override;
 
     // Player actions
     UFUNCTION(BlueprintCallable, Category = "Interaction")
@@ -47,9 +56,6 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Interaction")
     void AttachToPoint(UAttachmentPoint* Point);
-
-    UFUNCTION(BlueprintCallable, Category = "Interaction")
-    void UpdateHeldPosition(FVector WorldPosition);
 
     // State
     UFUNCTION(BlueprintPure, Category = "State")
@@ -62,7 +68,7 @@ public:
     UAttachmentPoint* GetAttachmentPoint() const { return CurrentAttachmentPoint; }
     
     UFUNCTION(BlueprintCallable, Category = "Attachment")
-    void DetachFromCurrentPoint();
+    void DetachFromPoint();
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Arm Type")
     EArmType ArmType = EArmType::Universal;
